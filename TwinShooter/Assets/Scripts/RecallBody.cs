@@ -13,6 +13,7 @@ public class RecallBody : MonoBehaviour
             return bIsRecalling;
         }
     }
+    private TimeControl control;
 
     [Header("CD")]
     // CD
@@ -31,6 +32,7 @@ public class RecallBody : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        control = GetComponent<TimeControl>();
         positions = new List<Vector3>();
         tr = GetComponent<TrailRenderer>();
         fillText = recallFill.transform.parent.GetChild(1).GetComponent<Text>();
@@ -78,18 +80,25 @@ public class RecallBody : MonoBehaviour
 
     void StartRecall()
     {
-        bIsRecalling = true;
-        Time.timeScale = 3f;
-        tr.enabled = true;
-        PPController.instance.FadeToDark(0.4f);
+        if (!control.BStopTime && !bIsRecalling)
+        {
+            bIsRecalling = true;
+            Time.timeScale = 3f;
+            tr.enabled = true;
+            PPController.instance.FadeToDark(0.4f);
+        }
     }
     void StopRecall()
     {
-        bIsRecalling = false;
-        Time.timeScale = 1f;
-        bCding = true;
-        PPController.instance.FadeToNormal(0.2f);
-        StartCoroutine(disableTr());
+        if (bIsRecalling)
+        {
+            bIsRecalling = false;
+            Time.timeScale = 1f;
+            bCding = true;
+            PPController.instance.FadeToNormal(0.2f);
+            StartCoroutine(disableTr());
+        }
+
     }
 
     IEnumerator disableTr()

@@ -9,10 +9,12 @@ public class TimeControl : MonoBehaviour
     {
         get { return bStopTime; }
     }
+
+    private RecallBody recall;
     // Start is called before the first frame update
     void Start()
     {
-        
+        recall = GetComponent<RecallBody>();
     }
 
     // Update is called once per frame
@@ -25,8 +27,13 @@ public class TimeControl : MonoBehaviour
     }
     public void StopTime()
     {
-        bStopTime = true;
-        PPController.instance.FadeToDark(0.4f);
+        if (!recall.BIsRecalling && !bStopTime)
+        {
+            bStopTime = true;
+            PPController.instance.FadeToDark(0.4f);
+            GetComponent<TrailRenderer>().enabled = true;
+            Time.timeScale = 0.1f;
+        }
     }
 
     public void SlowdownTime(float _scale)
@@ -36,8 +43,13 @@ public class TimeControl : MonoBehaviour
 
     public void ResumeTime()
     {
-        bStopTime = false;
-        PPController.instance.FadeToNormal(0.2f);
+        if (bStopTime)
+        {
+            bStopTime = false;
+            PPController.instance.FadeToNormal(0.2f);
+            GetComponent<TrailRenderer>().enabled = false;
+            Time.timeScale = 1f;
+        }
 
     }
 }

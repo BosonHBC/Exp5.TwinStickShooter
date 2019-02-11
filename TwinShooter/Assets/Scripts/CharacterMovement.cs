@@ -7,7 +7,7 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField]
     private float fMoveSpeed;
 
-    
+
     // private
     private Rigidbody rb;
     private Transform head;
@@ -24,7 +24,7 @@ public class CharacterMovement : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (!recallBody.BIsRecalling)
         {
@@ -40,8 +40,17 @@ public class CharacterMovement : MonoBehaviour
         float vert = Input.GetAxisRaw("Vertical");
         // movement
         Vector3 dir = (new Vector3(hori, 0, vert)).normalized;
-        rb.velocity = dir * fMoveSpeed * Time.deltaTime;
 
+        Debug.Log(Time.timeScale + " " + Time.fixedUnscaledDeltaTime + " " + Time.fixedDeltaTime);
+        //rb.velocity = dir * fMoveSpeed * Time.fixedUnscaledDeltaTime;
+        if (Time.timeScale < 1)
+        {
+            Time.fixedDeltaTime = 0.1f * 0.02f;
+            transform.position += dir * fMoveSpeed / 5 * Time.fixedDeltaTime;
+
+        }
+        else
+        transform.position += dir * fMoveSpeed / 50 * Time.fixedDeltaTime;
         // body rotation
         if (dir != Vector3.zero)
         {
