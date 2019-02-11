@@ -12,6 +12,7 @@ public class CharacterMovement : MonoBehaviour
     private Rigidbody rb;
     private Transform head;
     private Transform body;
+    private RecallBody recallBody;
     [HideInInspector] public Vector3 lookPoint;
     // Start is called before the first frame update
     void Start()
@@ -19,13 +20,17 @@ public class CharacterMovement : MonoBehaviour
         head = transform.GetChild(0);
         body = transform.GetChild(1);
         rb = GetComponent<Rigidbody>();
+        recallBody = GetComponent<RecallBody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        PerformMovement();
-        PerformRotation();
+        if (!recallBody.BIsRecalling)
+        {
+            PerformMovement();
+            PerformRotation();
+        }
     }
 
 

@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     }
 
     public Transform player;
+    public Transform bulletParent;
     // Start is called before the first frame update
     void Start()
     {

@@ -19,7 +19,10 @@ public class CameraMovement : MonoBehaviour
 
     Vector2 mousePos;
     bool bMouseInScreen;
-    // Start is called before the first frame update
+
+    // UI
+    private RectTransform reloadBar;
+    private float barOffsetY = 100;
     void Start()
     {
         player = GameManager.instance.player.GetComponent<CharacterMovement>();
@@ -35,6 +38,9 @@ public class CameraMovement : MonoBehaviour
         RaycastHit hit;
         Physics.Raycast(new Ray(cam.transform.position, cam.transform.forward), out hit, fRayCastDistance, rayCastMask);
         fDistanceToGround = Vector3.Distance(cam.transform.position, hit.point);
+
+        // UI
+        reloadBar = transform.GetChild(1).GetComponent<RectTransform>();
     }
 
     // Update is called once per frame
@@ -43,6 +49,8 @@ public class CameraMovement : MonoBehaviour
         MouseTrack();
         if (bMouseInScreen)
             CameraRayCast();
+
+        PlayerUIPosition();
     }
 
     void MouseTrack()
@@ -89,6 +97,15 @@ public class CameraMovement : MonoBehaviour
 
     }
 
+    void PlayerUIPosition()
+    {
+        Vector2 ViewportPosition = cam.WorldToViewportPoint(player.transform.position);
+        Vector2 WorldObject_ScreenPosition = new Vector2(
+        ((ViewportPosition.x * canvasSize.x) - (canvasSize.x * 0.5f)),
+        ((ViewportPosition.y * canvasSize.y) - (canvasSize.y * 0.5f)));
 
+        //now you can set the position of the ui element
+        reloadBar.anchoredPosition = WorldObject_ScreenPosition + new Vector2(0, barOffsetY);
+    }
 
 }
