@@ -13,14 +13,14 @@ public class PPController : MonoBehaviour
     }
     private PostProcessVolume volume;
     private ColorGrading ccSettings;
-    
+    private Vignette vignette;
     // Start is called before the first frame update
     void Start()
     {
         volume = GetComponent<PostProcessVolume>();
-        bool isValid = volume.profile.TryGetSettings<ColorGrading>(out ccSettings);
-
-        if (!isValid)
+        bool isValid1 = volume.profile.TryGetSettings<ColorGrading>(out ccSettings);
+        bool isValid2 = volume.profile.TryGetSettings<Vignette>(out vignette);
+        if (!isValid1 && isValid2)
             return;
 
     }
@@ -40,6 +40,16 @@ public class PPController : MonoBehaviour
         StartCoroutine(FadeParameter(new float[] { -100f, 100f }, new float[] { 50f, 0f }, _t));
 
     }
+
+    public void GetDamage(float _lerp)
+    {
+
+        GetComponent<Animator>().Play("GetDamage");
+        vignette.intensity.value = new FloatParameter(){value = Mathf.Lerp(0.3f, 0.45f, _lerp)};
+        Color _color = new Color(Mathf.Lerp(0, 0.7f, _lerp), 0, 0);
+        vignette.color.value = _color;
+    }
+
     IEnumerator FadeParameter(  float[] _start, float[] _end, float _fadeTime = 0.5f)
     {
         float _timeStartFade = Time.time;

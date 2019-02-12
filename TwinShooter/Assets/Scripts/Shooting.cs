@@ -13,6 +13,7 @@ public class Shooting : MonoBehaviour
     [SerializeField] private float fInterval;
     [SerializeField] private float fDamage;
     [SerializeField] private float fShootSpd;
+    [SerializeField]private float fDiffuseSize;
     private Transform spawnPoint;
     private Transform bulletParent;
     private float collpaseTime;
@@ -60,7 +61,7 @@ public class Shooting : MonoBehaviour
     {
         if (bCDing)
         {
-            collpaseTime += Time.unscaledDeltaTime;
+            collpaseTime += Time.deltaTime;
             if (collpaseTime >= fInterval)
             {
                 bCDing = false;
@@ -104,6 +105,6 @@ public class Shooting : MonoBehaviour
         }
            
 
-        go.GetComponent<BulletMover>().SetBullet(fDamage, fShootSpd);
+        go.GetComponent<BulletMover>().SetBullet(fDamage, fShootSpd, fDiffuseSize);
     }
 }

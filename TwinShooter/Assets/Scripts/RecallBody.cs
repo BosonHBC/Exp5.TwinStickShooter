@@ -26,14 +26,17 @@ public class RecallBody : MonoBehaviour
     [Header("Recall")]
     [SerializeField] private float fMaxRecordTime = 3f;
     private List<Vector3> positions;
-
+    private List<float> hps;
 
     private TrailRenderer tr;
+    private CharacterMovement thePlayer;
     // Start is called before the first frame update
     void Start()
     {
         control = GetComponent<TimeControl>();
+        thePlayer = GetComponent<CharacterMovement>();
         positions = new List<Vector3>();
+        hps = new List<float>();
         tr = GetComponent<TrailRenderer>();
         fillText = recallFill.transform.parent.GetChild(1).GetComponent<Text>();
     }
@@ -58,10 +61,17 @@ public class RecallBody : MonoBehaviour
     }
     void Recall()
     {
-        if(positions.Count > 0)
+        if (positions.Count > 0)
         {
             transform.position = positions[0];
             positions.RemoveAt(0);
+
+            thePlayer.SetHp(hps[0]);
+            hps.RemoveAt(0);
+            float curr = thePlayer.GetHp();
+            float max = thePlayer.GetMaxHp();
+            PPController.instance.GetDamage(1f - curr / max);
+            StatusControl.instance.SetHp(curr, max);
         }
         else
         {
@@ -71,17 +81,20 @@ public class RecallBody : MonoBehaviour
     void Record()
     {
         positions.Insert(0, transform.position);
+        hps.Insert(0, thePlayer.GetHp());
         if (positions.Count > Mathf.Round(fMaxRecordTime / Time.fixedUnscaledDeltaTime))
         {
             positions.RemoveAt(positions.Count - 1);
+            hps.RemoveAt(hps.Count - 1);
         }
-        
+
     }
 
     void StartRecall()
     {
         if (!control.BStopTime && !bIsRecalling)
         {
+            thePlayer.IsHitable(false);
             bIsRecalling = true;
             Time.timeScale = 3f;
             tr.enabled = true;
@@ -92,6 +105,7 @@ public class RecallBody : MonoBehaviour
     {
         if (bIsRecalling)
         {
+            thePlayer.IsHitable(true);
             bIsRecalling = false;
             Time.timeScale = 1f;
             bCding = true;
@@ -103,7 +117,7 @@ public class RecallBody : MonoBehaviour
 
     IEnumerator disableTr()
     {
-        yield return new WaitForSeconds(tr.time/2);
+        yield return new WaitForSeconds(tr.time / 2);
         tr.enabled = false;
     }
 

@@ -11,7 +11,10 @@ public class BulletMover : MonoBehaviour
     [SerializeField]
     private GameObject particlePrefab;
 
+   private int collisionCount;
+   private Vector3 dir;
     private float fCounter;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -21,8 +24,7 @@ public class BulletMover : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 dir = transform.forward;
-        rb.velocity = dir * fShootSpd;
+        rb.AddForce (dir * fShootSpd, ForceMode.Impulse);
 
         fCounter += Time.deltaTime;
 
@@ -31,8 +33,9 @@ public class BulletMover : MonoBehaviour
 
     }
 
-    public void SetBullet(float _dmg, float _spd)
+    public void SetBullet(float _dmg, float _spd, float _diffuse)
     {
+        dir = (transform.forward + Random.Range(-_diffuse, _diffuse) * transform.right).normalized;
         fDamage = _dmg;
         fShootSpd = _spd;
     }
@@ -42,6 +45,31 @@ public class BulletMover : MonoBehaviour
         GameObject particle = Instantiate(particlePrefab);
         particle.transform.position = collision.contacts[0].point;
         particle.transform.SetParent(transform.parent);
-        Destroy(gameObject);
+
+        if (collision.collider.CompareTag("Enemy") || collision.collider.CompareTag("Player"))
+        {
+            Actor actor = collision.collider.GetComponent<Actor>();
+            if (actor )
+            {
+                if (!actor.bDead)
+                {
+                    actor.GetDamage(fDamage);
+                }
+            }
+            else
+            {
+                Debug.LogError("No Actor attach to the actor object!");
+            }
+            Destroy(gameObject);
+        }
+        else
+        {
+            dir = collision.contacts[0].normal.normalized;
+            collisionCount++;
+        }
+        if(collisionCount >= 3)
+        {
+            Destroy(gameObject);
+        }
     }
 }
