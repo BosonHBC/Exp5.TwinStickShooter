@@ -25,12 +25,16 @@ public class Actor : MonoBehaviour
 
     public virtual void GetDamage(float _dmg)
     {
-        currentHp-= _dmg;
-        if (currentHp <= 0)
+        if (!bDead)
         {
-            currentHp = 0;
-            Die();
+            currentHp -= _dmg;
+            if (currentHp <= 0)
+            {
+                currentHp = 0;
+                Die();
+            }
         }
+
     }
 
     public virtual void Die()

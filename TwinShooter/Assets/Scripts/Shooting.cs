@@ -27,6 +27,7 @@ public class Shooting : MonoBehaviour
     private float fReloadCollapseTime;
     private bool bRelaoding;
     private int icurrBullet;
+    [SerializeField] private float fCurrentDiffuse = 0;
     [Header("UIRef")]
     [SerializeField] Image reloadBar;
     [SerializeField] Text bulletText;
@@ -69,6 +70,9 @@ public class Shooting : MonoBehaviour
             }
         }
 
+        fCurrentDiffuse -= fDiffuseSize * Time.deltaTime;
+        if (fCurrentDiffuse < 0)
+            fCurrentDiffuse = 0;
     }
 
     void Reload()
@@ -103,8 +107,10 @@ public class Shooting : MonoBehaviour
             bRelaoding = true;
             reloadBar.transform.parent.gameObject.SetActive(true);
         }
-           
+        go.GetComponent<BulletMover>().SetBullet(fDamage, fShootSpd, fCurrentDiffuse);
 
-        go.GetComponent<BulletMover>().SetBullet(fDamage, fShootSpd, fDiffuseSize);
+        fCurrentDiffuse += fDiffuseSize / 5f;
+        if (fCurrentDiffuse > fDiffuseSize)
+            fCurrentDiffuse = fDiffuseSize;
     }
 }

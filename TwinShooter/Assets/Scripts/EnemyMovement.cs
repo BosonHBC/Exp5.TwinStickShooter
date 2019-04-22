@@ -8,7 +8,7 @@ public class EnemyMovement : Actor
 {
     [SerializeField]
     GameObject bulletPrefab;
-
+    [SerializeField] private float[] fSpeedRange;
     [Header("Shooting")]
     // Shooting
     [SerializeField] private float fInterval;
@@ -16,6 +16,7 @@ public class EnemyMovement : Actor
     [SerializeField] private float fShootSpd;
     [SerializeField] private float fDiffuseSize;
     [SerializeField] private Transform HpBar;
+    
     private Transform spawnPoint;
     private Transform bulletParent;
     private float collpaseTime;
@@ -31,6 +32,7 @@ public class EnemyMovement : Actor
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        agent.speed = Random.Range(fSpeedRange[0], fSpeedRange[1]);
         playerTr = GameManager.instance.player.transform;
         bulletParent = GameManager.instance.bulletParent;
         spawnPoint = transform.GetChild(1);
