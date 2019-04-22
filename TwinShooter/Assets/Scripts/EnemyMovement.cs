@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.AI;
 
 public class EnemyMovement : Actor
@@ -14,6 +15,7 @@ public class EnemyMovement : Actor
     [SerializeField] private float fDamage;
     [SerializeField] private float fShootSpd;
     [SerializeField] private float fDiffuseSize;
+    [SerializeField] private Transform HpBar;
     private Transform spawnPoint;
     private Transform bulletParent;
     private float collpaseTime;
@@ -22,8 +24,10 @@ public class EnemyMovement : Actor
     private NavMeshAgent agent;
     [SerializeField] private float fMaxDetectDist;
     private bool bSeeplayer;
+    Transform camTr;
 
     Transform playerTr;
+    
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -33,7 +37,7 @@ public class EnemyMovement : Actor
         bCDing = true;
         InvokeRepeating("SetDestination", 0, 0.3f);
 
-
+        camTr = Camera.main.transform;
         bSeeplayer = true;
     }
     void SetDestination()
@@ -45,6 +49,7 @@ public class EnemyMovement : Actor
     {
         if (!bDead)
         {
+            HpBar.LookAt(camTr);
             DetectPlayer();
             CoolDown();
         }
@@ -73,18 +78,19 @@ public class EnemyMovement : Actor
         GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
         GetComponent<CapsuleCollider>().isTrigger = true;
         GetComponent<NavMeshObstacle>().enabled = true;
+        HpBar.gameObject.SetActive(false);
         gameObject.tag = "Untagged";
         bDead = true;
 
         GameManager.instance.GetScore(850);
         EnemySpawner.instance.SpawnEnemy();
+        Destroy(gameObject, 10f);
     }
     public override void GetDamage(float _dmg)
     {
         base.GetDamage(_dmg);
 
-        if (currentHp < maxHp * 0.8f)
-            transform.GetChild(2).gameObject.SetActive(true);
+        HpBar.transform.GetChild(0).GetComponent<Image>().fillAmount = currentHp / maxHp;
     }
 
     IEnumerator DisableGameObject()
@@ -107,6 +113,8 @@ public class EnemyMovement : Actor
         }
 
     }
+     
+    
 
     void CoolDown()
     {
@@ -125,7 +133,7 @@ public class EnemyMovement : Actor
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.CompareTag("Player"))
+        if (collision.collider.CompareTag("Player") && !bDead)
         {
             Actor actor = collision.collider.GetComponent<Actor>();
             if (!actor.bDead)

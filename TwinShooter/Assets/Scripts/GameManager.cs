@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
     [SerializeField] GameObject deadPannel;
     [SerializeField] Text scoreText;
+    Animator addScoreAnim;
     private void Awake()
     {
         if (instance != this || instance == null)
@@ -20,10 +21,13 @@ public class GameManager : MonoBehaviour
     public Transform bulletParent;
 
     bool bGameOver;
+    bool bRestarting;
     // Start is called before the first frame update
     void Start()
     {
         iScore = 0;
+        bRestarting = false;
+        addScoreAnim = scoreText.transform.GetChild(0).GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -34,18 +38,15 @@ public class GameManager : MonoBehaviour
             iScore += 52 * Time.deltaTime;
             scoreText.text = ((int)iScore).ToString();
         }
-
-        if (Input.GetKeyDown(KeyCode.P))
+        else
         {
-            Restart();
+            if (Input.GetKeyDown(KeyCode.R) &&!bRestarting)
+            {
+                bRestarting = true;
+                GameLoopManager.instance.NextScene(0);
+            }
         }
     }
-
-    public void Restart()
-    {
-        SceneManager.LoadScene(0);
-    }
-
     public void GameOver()
     {
         bGameOver = true;
@@ -55,6 +56,7 @@ public class GameManager : MonoBehaviour
     public void GetScore(int _score)
     {
         iScore += _score;
-
+        addScoreAnim.GetComponent<Text>().text = "+" + _score.ToString();
+        addScoreAnim.Play("AddScore");
     }
 }

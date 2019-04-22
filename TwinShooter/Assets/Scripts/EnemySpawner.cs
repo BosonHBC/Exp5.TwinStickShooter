@@ -14,6 +14,8 @@ public class EnemySpawner : MonoBehaviour
 
     [SerializeField] GameObject enemyPrefab;
     [SerializeField] float radius;
+
+    public int currentEnemyAmount = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,6 +24,7 @@ public class EnemySpawner : MonoBehaviour
             GameObject go = Instantiate(enemyPrefab);
             go.transform.position = RandomNavmeshLocation(radius);
             go.transform.SetParent(transform);
+            currentEnemyAmount++;
         }
     }
 
@@ -39,6 +42,11 @@ public class EnemySpawner : MonoBehaviour
             GameObject go = Instantiate(enemyPrefab);
             go.transform.position = RandomNavmeshLocation(radius);
             go.transform.SetParent(transform);
+            currentEnemyAmount++;
+        }
+        if(currentEnemyAmount == 0)
+        {
+            SpawnEnemy();
         }
 
     }

@@ -33,7 +33,7 @@ public class StatusControl : MonoBehaviour
     public void SetHp(float currentHp, float maxHp)
     {
         hpFill.fillAmount = currentHp / maxHp;
-        hpText.text = currentHp + " / " + maxHp;
+        hpText.text = (int)currentHp + " / " + maxHp;
     }
 
     public void SetStopBar(float ratio)
