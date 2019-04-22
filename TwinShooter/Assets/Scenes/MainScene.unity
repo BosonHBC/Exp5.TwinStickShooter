@@ -113,7 +113,7 @@ NavMeshSettings:
     accuratePlacement: 0
     debug:
       m_Flags: 0
-  m_NavMeshData: {fileID: 23800000, guid: 99fcb733b29e7ae48a6eba83e24f87f6, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 85841b21c97daae409cf842797097532, type: 2}
 --- !u!1 &6970860
 GameObject:
   m_ObjectHideFlags: 0
@@ -4916,7 +4916,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 8583755267989950230, guid: e92673511ca306d40805381df8e0abc9,
     type: 3}
-  radius: 22.85
+  radius: 36.5
   currentEnemyAmount: 0
 --- !u!4 &1008100136
 Transform:
@@ -4926,7 +4926,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1008100134}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.3, y: 0, z: -8.1}
+  m_LocalPosition: {x: -5.6, y: 0, z: -6.1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
