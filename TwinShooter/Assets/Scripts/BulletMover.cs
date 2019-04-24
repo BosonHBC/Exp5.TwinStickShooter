@@ -64,7 +64,12 @@ public class BulletMover : MonoBehaviour
         }
         else
         {
-            dir = collision.contacts[0].normal.normalized;
+
+            Vector3 _inDir = dir;
+            Vector3 _N = collision.contacts[0].normal;
+
+            dir = _inDir - 2 * Vector3.Dot(_inDir, _N) * _N;
+          //  dir = collision.contacts[0].normal.normalized;
             collisionCount++;
         }
         if(collisionCount >= 3)

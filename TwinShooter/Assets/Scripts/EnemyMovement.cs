@@ -28,11 +28,12 @@ public class EnemyMovement : Actor
     Transform camTr;
 
     Transform playerTr;
-    
+    private float fSpdPercent;
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         agent.speed = Random.Range(fSpeedRange[0], fSpeedRange[1]);
+        fSpdPercent = (agent.speed - fSpeedRange[0]) / (fSpeedRange[1] - fSpeedRange[0]);
         playerTr = GameManager.instance.player.transform;
         bulletParent = GameManager.instance.bulletParent;
         spawnPoint = transform.GetChild(1);
@@ -111,7 +112,7 @@ public class EnemyMovement : Actor
             go.transform.SetParent(bulletParent);
             go.transform.position = spawnPoint.position;
             go.transform.rotation = spawnPoint.rotation;
-            go.GetComponent<BulletMover>().SetBullet(fDamage, fShootSpd, fDiffuseSize);
+            go.GetComponent<BulletMover>().SetBullet(fDamage, fShootSpd * (1+ fSpdPercent), fDiffuseSize);
         }
 
     }
